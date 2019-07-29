@@ -629,11 +629,21 @@ error_set_option:
     return false;
 }
 
+void FFmpegLogFunc(void *ptr, int level, const char *fmt, va_list vl) {
+    FILE *fp = fopen("FFmpegLog.txt", "a+");
+    if (fp) {
+        vfprintf(fp, fmt, vl);
+        fflush(fp);
+        fclose(fp);
+    }
+}
+
 int
 main(int argc, char *argv[])
 {
     App *app;
     int ret = EXIT_FAILURE;
+    av_log_set_callback(FFmpegLogFunc);
 
     if (argc == 1) {
         print_help(argv[0]);
